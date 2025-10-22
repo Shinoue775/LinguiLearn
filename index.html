@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson Demo</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #4da6ff, #1e90ff);
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+      text-align: center;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 25px;
+      padding: 50px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      width: 90%;
+      max-width: 500px;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    #prompt {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 25px;
+    }
+
+    #choices {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    #choices button {
+      background: #fff;
+      color: #1e90ff;
+      font-size: 1.1rem;
+      font-weight: bold;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    #choices button:hover {
+      background: #1e90ff;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    #feedback {
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      min-height: 30px;
+    }
+
+    #nextBtn {
+      background: #007bff;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    #nextBtn:hover {
+      background: #0056b3;
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="prompt"></div>
+    <div id="choices"></div>
+    <div id="feedback"></div>
+    <button id="nextBtn" style="display:none;">Next</button>
+  </div>
+
+  <script>
+    const lessonId = 1;
+    const userId = "user1";
+    let currentExercise = null;
+
+    async function loadNext() {
+      document.getElementById('feedback').innerText = "";
+      document.getElementById('nextBtn').style.display = "none";
+      const resp = await fetch(`/lesson/${lessonId}/next/${userId}`);
+      const j = await resp.json();
+      if (j.done) {
+        document.getElementById('prompt').innerText = `🎉 Finished!`;
+        document.getElementById('choices').innerHTML = "";
+        document.getElementById('feedback').innerText = `✅ Correct: ${j.correct} | ❌ Wrong: ${j.wrong}`;
+        return;
+      }
+      currentExercise = j.exercise;
+      document.getElementById('prompt').innerText = currentExercise.prompt;
+      const choicesDiv = document.getElementById('choices');
+      choicesDiv.innerHTML = "";
+      currentExercise.choices.forEach(ch => {
+        const btn = document.createElement('button');
+        btn.innerText = ch.text;
+        btn.onclick = () => submitChoice(ch.id);
+        choicesDiv.appendChild(btn);
+      });
+    }
+
+    async function submitChoice(choiceId) {
+      const body = {
+        exerciseId: currentExercise.id,
+        choiceId: choiceId
+      };
+      const resp = await fetch(`/lesson/${lessonId}/answer/${userId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const j = await resp.json();
+      document.getElementById('feedback').innerText = j.correct ? "✅ Correct!" : "❌ Wrong";
+      document.getElementById('nextBtn').style.display = "inline";
+    }
+
+    document.getElementById('nextBtn').onclick = loadNext;
+
+    // start
+    loadNext();
+  </script>
+</body>
+</html>
