@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pronunciation Practice</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: linear-gradient(180deg, #0a74da, #cce6ff);
+      color: white;
+      padding-top: 80px;
+    }
+    button {
+      background-color: #007bff;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 12px;
+      font-size: 18px;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    #feedback {
+      margin-top: 20px;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Speech Pronunciation Demo</h1>
+  <p>Say this word: <strong id="targetWord">Hello</strong></p>
+  <button id="startBtn">🎤 Start Speaking</button>
+  <div id="feedback"></div>
+
+  <script>
+    const targetWord = document.getElementById("targetWord").textContent.toLowerCase();
+    const feedback = document.getElementById("feedback");
+    const startBtn = document.getElementById("startBtn");
+
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'en-US';
+
+    startBtn.addEventListener("click", () => {
+      recognition.start();
+      feedback.textContent = "Listening...";
+    });
+
+    recognition.onresult = (event) => {
+      const spoken = event.results[0][0].transcript.toLowerCase();
+      const confidence = event.results[0][0].confidence;
+      feedback.innerHTML = `
+        You said: <strong>${spoken}</strong><br>
+        Confidence: ${(confidence * 100).toFixed(1)}%
+      `;
+
+      const similarity = stringSimilarity(spoken, targetWord);
+      if (similarity > 0.8) {
+        feedback.innerHTML += `<br>✅ Good pronunciation!`;
+      } else {
+        feedback.innerHTML += `<br>❌ Try again.`;
+      }
+    };
+
+    function stringSimilarity(a, b) {
+      const longer = a.length > b.length ? a : b;
+      const shorter = a.length > b.length ? b : a;
+      const longerLength = longer.length;
+      const common = longer.split('').filter((char, i) => shorter[i] === char).length;
+      return common / longerLength;
+    }
+  </script>
+</body>
+</html>

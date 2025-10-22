@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LinguaLearn AI</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #00A6FB, #006494);
+    }
+    .screen {
+      display: none;
+      background: #fff;
+      width: 360px;
+      min-height: 560px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      padding: 30px 20px;
+      text-align: center;
+      position: relative;
+      animation: fadeIn 0.4s ease;
+    }
+    .active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    h1, h2, h3 {
+      margin-bottom: 15px;
+      color: #222;
+      font-weight: 600;
+    }
+    p {
+      color: #555;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      background: #00A6FB;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover { background: #0086c7; }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 14px;
+      background: #f9f9f9;
+    }
+    .small-text {
+      font-size: 12px;
+      margin-top: 10px;
+      color: #777;
+    }
+    .progress {
+      height: 6px;
+      background: #eee;
+      border-radius: 3px;
+      margin: 0 0 20px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 6px;
+      background: #00A6FB;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+    .icon {
+      font-size: 60px;
+      margin-bottom: 20px;
+      color: #00A6FB;
+    }
+    /* Header bar design */
+    .header {
+      background: linear-gradient(135deg, #00A6FB, #006494);
+      color: white;
+      font-weight: bold;
+      padding: 15px;
+      border-radius: 15px 15px 0 0;
+      margin: -30px -20px 20px -20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen 0 (Login Phase) -->
+  <div id="screen0" class="screen active">
+    <div class="header">LinguaLearn AI</div>
+    <div class="icon">🌐</div>
+    <h2>Welcome Back</h2>
+    <input type="text" placeholder="Username">
+    <input type="password" placeholder="Password">
+    <button onclick="nextScreen(1)">Log In</button>
+    <p class="small-text">Don’t have an account? <a href="#" onclick="nextScreen(1)">Sign Up</a></p>
+  </div>
+
+  <!-- Screen 1 (Welcome) -->
+  <div id="screen1" class="screen">
+    <div class="header">Welcome</div>
+    <div class="icon">💬</div>
+    <h2>LinguaLearn AI</h2>
+    <p>An AI-Powered Learning Experience to Become a Language Expert!</p>
+    <button onclick="nextScreen(2)">SIGN UP NOW</button>
+    <button onclick="nextScreen(2)" style="background:#555">LOG IN</button>
+  </div>
+
+  <!-- Screen 2 -->
+  <div id="screen2" class="screen">
+    <div class="header">Profile Setup</div>
+    <div class="progress"><div class="progress-bar" id="bar2"></div></div>
+    <h2>Create Your Profile</h2>
+    <input type="email" placeholder="Email">
+    <input type="date" placeholder="Birthday">
+    <input type="text" placeholder="Username">
+    <input type="password" placeholder="Password">
+    <button onclick="nextScreen(3)">Create Account</button>
+    <p class="small-text">Or continue with</p>
+    <button style="background:#db4437" onclick="nextScreen(3)">Google Login</button>
+  </div>
+
+  <!-- Screen 3 -->
+  <div id="screen3" class="screen">
+    <div class="header">Success</div>
+    <div class="progress"><div class="progress-bar" id="bar3"></div></div>
+    <h2>All Set Now!</h2>
+    <p>Click continue to finally experience LinguaLearn's magic.</p>
+    <button onclick="nextScreen(4)">Continue</button>
+  </div>
+
+  <!-- Screen 4 -->
+  <div id="screen4" class="screen">
+    <div class="header">Choose Language</div>
+    <div class="progress"><div class="progress-bar" id="bar4"></div></div>
+    <h2>Select Your Language</h2>
+    <select>
+      <option>Afrikaans</option>
+      <option>Albanian</option>
+      <option>Arabic</option>
+      <option>Chinese</option>
+      <option>English</option>
+      <option>French</option>
+      <option>German</option>
+      <option>Japanese</option>
+      <option>Korean</option>
+      <option>Spanish</option>
+    </select>
+    <button onclick="nextScreen(5)">Continue</button>
+  </div>
+
+  <!-- Screen 5 -->
+  <div id="screen5" class="screen">
+    <div class="header">Your Level</div>
+    <div class="progress"><div class="progress-bar" id="bar5"></div></div>
+    <h2>How much do you know?</h2>
+    <button onclick="nextScreen(6)">Novice 🌱</button>
+    <button onclick="nextScreen(6)">Advanced Beginner 📘</button>
+    <button onclick="nextScreen(6)">Competent ✨</button>
+    <button onclick="nextScreen(6)">Proficient 🚀</button>
+    <button onclick="nextScreen(6)">Expert 🏆</button>
+  </div>
+
+<!-- Screen 6 -->
+<div id="screen6" class="screen">
+  <div class="header">Get Started</div>
+  <div class="progress"><div class="progress-bar" id="bar6"></div></div>
+  <h2>How do you want to start?</h2>
+  <button onclick="goToMain()">From The Beginning 📖</button>
+  <button onclick="goToMain()">Find Your Level 🎯</button>
+</div>
+
+
+  <script>
+    function nextScreen(num) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById("screen" + num).classList.add('active');
+
+      // Progress bar animation
+      let bar = document.getElementById("bar" + num);
+      if (bar) bar.style.width = ((num-1) * 20) + "%";
+    }
+  </script>
+
+<script>
+  function goToMain() {
+    // Redirect to your second HTML file
+    window.location.href = "draft2.html"; 
+  }
+</script>
+
+
+</body>
+</html>

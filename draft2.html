@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LinguaLearn AI</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f5f7fa;
+    }
+
+    .screen {
+      display: none;
+      background: white;
+      width: 380px;
+      min-height: 650px;
+      border-radius: 25px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      overflow: hidden;
+      position: relative;
+      text-align: center;
+    }
+    .active { display: block; }
+
+    header {
+      background: #00A6FB;
+      color: white;
+      padding: 15px;
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    h2, h3 { margin: 15px 0; }
+    p { margin: 10px; color: #444; }
+
+    button {
+      display: block;
+      width: 90%;
+      padding: 14px;
+      margin: 12px auto;
+      background: #00A6FB;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    button:hover { background: #0086c7; transform: scale(1.03); }
+
+    input {
+      width: 90%;
+      padding: 12px;
+      margin: 10px auto;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      display: block;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: #00A6FB;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+    }
+    .bottom-nav button {
+      width: auto;
+      background: none;
+      color: white;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .chat-box {
+      text-align: left;
+      padding: 15px;
+      height: calc(100% - 120px);
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+
+    .msg {
+      background: #eee;
+      padding: 10px;
+      margin: 8px;
+      border-radius: 8px;
+      display: inline-block;
+      max-width: 80%;
+      clear: both;
+    }
+    .msg.user {
+      background: #00A6FB;
+      color: white;
+      float: right;
+    }
+
+    .chat-input {
+      display: flex;
+      padding: 10px;
+      border-top: 1px solid #ddd;
+      background: #fff;
+      position: absolute;
+      bottom: 60px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    /* Bigger lesson cards */
+    .lesson-card {
+      border: 1px solid #ddd;
+      padding: 25px;
+      margin: 20px auto;
+      border-radius: 15px;
+      text-align: left;
+      width: 85%;
+      font-size: 16px;
+      background: #fafafa;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+    .lesson-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    }
+
+    .settings-list {
+      text-align: left;
+      padding: 20px;
+    }
+    .settings-list div {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+    }
+    .profile-pic {
+      font-size: 90px;
+      margin: 25px;
+    }
+
+    /* Feedback Colors */
+    .correct { color: #00cc66; }
+    .almost { color: #ffcc00; }
+    .incorrect { color: #ff3333; }
+
+    /* Simple AI Logic Styles */
+    #recommendations ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    #recommendations li {
+      background: #f1f1f1;
+      margin: 6px;
+      padding: 10px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Home -->
+  <div id="home" class="screen active">
+    <header>LinguaLearn</header>
+    <div class="profile-pic">👤</div>
+    <h2 id="username">John Doe</h2>
+    <p>Italian • Advanced Beginner</p>
+    <button onclick="showScreen('lessons')">Continue</button>
+    <div class="bottom-nav">
+      <button onclick="showScreen('home')">🏠</button>
+      <button onclick="showScreen('lessons')">📖</button>
+      <button onclick="showScreen('profile')">👤</button>
+      <button onclick="showScreen('settings')">⚙️</button>
+    </div>
+  </div>
+
+  <!-- Lessons -->
+  <div id="lessons" class="screen">
+    <header>Lessons</header>
+    <div class="lesson-card">
+      <h3>🗣️ Communication Practice</h3>
+      <p>2.1 You said <i>vino</i> (wine), but the word was <i>vena</i> (vein). Focus on the “e”.</p>
+      <p>2.5 Try phrases: <b>ciao</b>, <b>bene</b>, <b>grazie</b>.</p>
+    </div>
+    <button onclick="showScreen('practice')">Start Practice</button>
+    <button onclick="showScreen('recommendations')">Smart Recommendations</button>
+
+    <div class="bottom-nav">
+      <button onclick="showScreen('home')">🏠</button>
+      <button onclick="showScreen('lessons')">📖</button>
+      <button onclick="showScreen('profile')">👤</button>
+      <button onclick="showScreen('settings')">⚙️</button>
+    </div>
+  </div>
+
+  <!-- Smart Recommendations -->
+  <div id="recommendations" class="screen">
+    <header>Smart Recommendations</header>
+    <div style="padding: 20px;">
+      <h3>Enter a word you’re practicing:</h3>
+      <input type="text" id="wordInput" placeholder="e.g. ciao, grazie">
+      <button id="addWord">Add Word</button>
+      <p id="feedback"></p>
+      <h3>Recommended Topics:</h3>
+      <ul id="recommendationsList"></ul>
+    </div>
+    <button onclick="showScreen('lessons')">Back</button>
+
+    <div class="bottom-nav">
+      <button onclick="showScreen('home')">🏠</button>
+      <button onclick="showScreen('lessons')">📖</button>
+      <button onclick="showScreen('profile')">👤</button>
+      <button onclick="showScreen('settings')">⚙️</button>
+    </div>
+  </div>
+
+  <!-- Practice -->
+  <div id="practice" class="screen">
+    <header>Practice</header>
+    <h3>Select a word to practice:</h3>
+
+    <div id="wordList" style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin:25px;">
+      <button onclick="setTarget('ciao')">Ciao</button>
+      <button onclick="setTarget('bene')">Bene</button>
+      <button onclick="setTarget('hello')">Hello</button>
+      <button onclick="setTarget('gracias')">Gracias</button>
+    </div>
+
+    <p id="selectedWord" style="font-size:20px;">Selected: <b>None</b></p>
+
+    <button id="recordBtn">🎤 Start Speaking</button>
+    <div id="feedbackSpeech" style="margin-top:15px; font-size:18px; font-weight:bold;"></div>
+
+    <button onclick="showScreen('lessons')">Back</button>
+
+    <div class="bottom-nav">
+      <button onclick="showScreen('home')">🏠</button>
+      <button onclick="showScreen('lessons')">📖</button>
+      <button onclick="showScreen('profile')">👤</button>
+      <button onclick="showScreen('settings')">⚙️</button>
+    </div>
+  </div>
+
+  <!-- Profile -->
+  <div id="profile" class="screen">
+    <header>Profile</header>
+    <div class="profile-pic">👤</div>
+    <input id="nameInput" value="John Doe">
+    <input id="birthInput" value="2001-01-01" type="date">
+    <input id="phoneInput" value="+63 907 004 2947">
+    <input id="emailInput" value="johndoe@gmail.com">
+    <button onclick="saveProfile()">Save</button>
+    <button onclick="showScreen('home')">Cancel</button>
+
+    <div class="bottom-nav">
+      <button onclick="showScreen('home')">🏠</button>
+      <button onclick="showScreen('lessons')">📖</button>
+      <button onclick="showScreen('profile')">👤</button>
+      <button onclick="showScreen('settings')">⚙️</button>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <div id="settings" class="screen">
+    <header>Settings</header>
+    <div class="settings-list">
+      <div>Preferences</div>
+      <div>Languages</div>
+      <div>Notifications</div>
+      <div>Display</div>
+      <div>Help Center</div>
+      <div>Feedback</div>
+      <div>Log Out</div>
+      <div>Terms and Conditions</div>
+    </div>
+
+    <div class="bottom-nav">
+      <button onclick="showScreen('home')">🏠</button>
+      <button onclick="showScreen('lessons')">📖</button>
+      <button onclick="showScreen('profile')">👤</button>
+      <button onclick="showScreen('settings')">⚙️</button>
+    </div>
+  </div>
+
+  <!-- Script: Navigation + Profile -->
+  <script>
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function saveProfile() {
+      let name = document.getElementById("nameInput").value;
+      document.getElementById("username").innerText = name;
+      showScreen('home');
+    }
+  </script>
+
+  <!-- ✅ SIMPLE AI LOGIC -->
+  <script>
+    const wordInput = document.getElementById("wordInput");
+    const addWord = document.getElementById("addWord");
+    const feedback = document.getElementById("feedback");
+    const recommendationsList = document.getElementById("recommendationsList");
+
+    const topics = {
+      "Greetings": ["ciao", "buongiorno", "arrivederci", "salve"],
+      "Food & Dining": ["pane", "vino", "ristorante", "cameriere", "menu"],
+      "Travel": ["treno", "aeroporto", "mappa", "hotel", "valigia"],
+      "Shopping": ["negozio", "prezzo", "comprare", "vendita", "scarpe"],
+      "Emotions": ["felice", "triste", "arrabbiato", "sorpreso", "calmo"]
+    };
+
+    addWord.addEventListener("click", () => {
+      const word = wordInput.value.trim().toLowerCase();
+      if (!word) return;
+      feedback.textContent = `You added: "${word}"`;
+
+      const matches = Object.entries(topics)
+        .filter(([topic, words]) => words.includes(word))
+        .map(([topic]) => topic);
+
+      const suggested = matches.length ? matches : ["General Vocabulary Practice"];
+      recommendationsList.innerHTML = suggested
+        .map(topic => `<li>${topic} – Try practicing: ${topics[topic]?.slice(0,3).join(", ") || "basic phrases"}</li>`)
+        .join("");
+      wordInput.value = "";
+    });
+  </script>
+
+  <!-- ✅ Botpress Chatbot Integration -->
+  <script src="https://cdn.botpress.cloud/webchat/v3.3/inject.js"></script>
+  <script src="https://files.bpcontent.cloud/2025/10/13/12/20251013123222-VA8N1CWV.js" defer></script>
+</body>
+</html>
